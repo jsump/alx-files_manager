@@ -23,39 +23,54 @@ class RedisClient {
   }
 
   async get(key) {
-    return new Promise((resolve, reject) => {
-      this.client.get(key, (error, value) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(value);
-        }
+    try {
+      return await new Promise((resolve, reject) => {
+        this.client.get(key, (error, value) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(value);
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.error(`Error getting value from Redis for key ${key}:`, error);
+      throw error; // Rethrow the error for handling at a higher level
+    }
   }
 
   async set(key, value, duration) {
-    return new Promise((resolve, reject) => {
-      this.client.set(key, value, "EX", duration, (error, value) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(value);
-        }
+    try {
+      return await new Promise((resolve, reject) => {
+        this.client.set(key, value, "EX", duration, (error, value) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(value);
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.error(`Error setting value in Redis for key ${key}:`, error);
+      throw error; // Rethrow the error for handling at a higher level
+    }
   }
 
   async del(key) {
-    return new Promise((resolve, reject) => {
-      this.client.del(key, (error, value) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(value);
-        }
+    try {
+      return await new Promise((resolve, reject) => {
+        this.client.del(key, (error, value) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(value);
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.error(`Error deleting value from Redis for key ${key}:`, error);
+      throw error; // Rethrow the error for handling at a higher level
+    }
   }
 }
 
