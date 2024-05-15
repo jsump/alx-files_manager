@@ -10,56 +10,79 @@ class RedisClient {
     });
   }
 
-  isAlive() {
-    return new Promise((resolve) => {
-      this.client.ping((error, response) => {
-        if (error) {
-          // If there's an error, Redis is not alive
-          resolve(false);
-        } else {
-          // If response is "PONG", Redis is alive
-          resolve(response === "PONG");
-        }
+  async isAlive() {
+    try {
+      const response = await new Promise((resolve, reject) => {
+        this.client.ping((error, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(response);
+          }
+        });
       });
-    });
+      
+      return response === "PONG";
+    } catch (error) {
+      console.error("Error checking Redis status:", error);
+      return false;
+    }
   }
 
   async get(key) {
-    return new Promise((resolve, reject) => {
-      this.client.get(key, (error, value) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(value);
-        }
+    try {
+      const value = await new Promise((resolve, reject) => {
+        this.client.get(key, (error, value) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(value);
+          }
+        });
       });
-    });
+      
+      return value;
+    } catch (error) {
+      console.error("Error getting value from Redis:", error);
+      throw error;
+    }
   }
 
   async set(key, value, duration) {
-    return new Promise((resolve, reject) => {
-      this.client.set(key, value, "EX", duration, (error, value) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(value);
-        }
+    try {
+      await new Promise((resolve, reject) => {
+        this.client.set(key, value, "EX", duration, (error, value) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(value);
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.error("Error setting value in Redis:", error);
+      throw error;
+    }
   }
 
   async del(key) {
-    return new Promise((resolve, reject) => {
-      this.client.del(key, (error, value) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(value);
-        }
+    try {
+      await new Promise((resolve, reject) => {
+        this.client.del(key, (error, value) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(value);
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.error("Error deleting value from Redis:", error);
+      throw error;
+    }
   }
 }
+
 
 const redisClient = new RedisClient();
 
