@@ -11,18 +11,8 @@ class RedisClient {
   }
 
   isAlive() {
-    return new Promise((resolve) => {
-      this.client.ping((error, response) => {
-        if (error) {
-          // If there's an error, Redis is not alive
-          resolve(false);
-        } else {
-          // If response is "PONG", Redis is alive
-          resolve(response === 'PONG');
-        }
-      });
-    });
-  }
+    return this.client.isConnected();
+}
 
   async get(key) {
     return new Promise((resolve, reject) => {
@@ -62,10 +52,5 @@ class RedisClient {
 }
 
 const redisClient = new RedisClient();
-
-(async () => {
-  const alive = await redisClient.isAlive();
-  console.log(alive);
-})();
 
 module.exports = redisClient;
