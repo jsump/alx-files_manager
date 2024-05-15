@@ -1,7 +1,8 @@
+const redisClient = require('../utils/redis'); // redis client
+const dbClient = require('../utils/db'); // database client
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
-const dbClient = require('../utils/db'); // database client
-const redisClient = require('../utils/redis'); // redis client
+
 
 const AuthController = {
   connect: async (req, res) => {
