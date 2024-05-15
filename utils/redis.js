@@ -5,7 +5,7 @@ class RedisClient {
     this.client = redis.createClient();
 
     // when Connection to Redis does not work
-    this.client.on("error", (error) => {
+    this.client.on('error', (error) => {
       console.log(`Redis client not connected to the server: ${error}`);
     });
   }
@@ -63,6 +63,7 @@ class RedisClient {
 
 const redisClient = new RedisClient();
 
+// Immediately-invoked function expression (IIFE)
 (async () => {
   const alive = await redisClient.isAlive();
   console.log(alive);
