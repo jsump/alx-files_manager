@@ -15,11 +15,6 @@ const UsersController = {
       return res.status(400).json({ error: 'Missing password' });
     }
 
-    //both email and password are missing
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Missing email or password' });
-    }
-
     try {
       // Check if the email already exists in the database
       const existingUser = await dbClient
