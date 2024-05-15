@@ -25,8 +25,7 @@ const AuthController = {
         .createHash("sha1")
         .update(password)
         .digest("hex");
-      const user = await dbClient
-        .db()
+      const user = await db
         .collection("users")
         .findOne({ email, password: hashedPassword });
 
