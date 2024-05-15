@@ -63,7 +63,6 @@ class RedisClient {
 
 const redisClient = new RedisClient();
 
-// Immediately-invoked function expression (IIFE)
 (async () => {
   const alive = await redisClient.isAlive();
   console.log(alive);
