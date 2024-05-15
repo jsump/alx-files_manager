@@ -20,12 +20,13 @@ const AuthController = {
 
     try {
       // Find user in the database by email and hashed password
+      const db = dbClient.client.db(dbClient.dbName);
       const hashedPassword = crypto
         .createHash("sha1")
         .update(password)
         .digest("hex");
       const user = await dbClient
-        .db(dbClient.dbName)
+        .db()
         .collection("users")
         .findOne({ email, password: hashedPassword });
 
