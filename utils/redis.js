@@ -1,26 +1,24 @@
-import redis from 'redis';
+import redis from "redis";
 
 class RedisClient {
   constructor() {
     this.client = redis.createClient();
 
     // when Connection to Redis does not work
-    this.client.on('error', (error) => {
+    this.client.on("error", (error) => {
       console.log(`Redis client not connected to the server: ${error}`);
     });
   }
 
-  isAlive() {
-    return new Promise((resolve) => {
-      this.client.ping((error, response) => {
-        if (error) {
-          // If there's an error, Redis is not alive
-          resolve(false);
-        } else {
-          // If response is "PONG", Redis is alive
-          resolve(response === 'PONG');
-        }
-      });
+  isAlive(callback) {
+    this.client.ping((error, response) => {
+      if (error) {
+        // If there's an error, Redis is not alive
+        callback(false);
+      } else {
+        // If response is "PONG", Redis is alive
+        callback(response === "PONG");
+      }
     });
   }
 
@@ -38,7 +36,7 @@ class RedisClient {
 
   async set(key, value, duration) {
     return new Promise((resolve, reject) => {
-      this.client.set(key, value, 'EX', duration, (error, value) => {
+      this.client.set(key, value, "EX", duration, (error, value) => {
         if (error) {
           reject(error);
         } else {
