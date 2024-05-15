@@ -4,7 +4,7 @@ const router = require('./routes/index.js');
 const app = express();
 
 // Router middleware at the root path
-app.use('/', router);
+app.use(express.json());
 
 // Set the port from the environment variable
 const port = process.env.PORT || 5000;
