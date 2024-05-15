@@ -17,10 +17,8 @@ const UsersController = {
 
     try {
       // Check if the email already exists in the database
-      const existingUser = await dbClient
-        .db()
-        .collection('users')
-        .findOne({ email });
+      const db = dbClient.client.db(dbClient.dbName); // Get the database object
+      const existingUser = await db.collection('users').findOne({ email });
 
       if (existingUser) {
         return res.status(400).json({ error: 'Already exists' });
@@ -39,7 +37,7 @@ const UsersController = {
       };
 
       // Insert the new user document into the database
-      const result = await dbClient.db().collection('users').insertOne(newUser);
+      const result = await db.collection('users').insertOne(newUser);
 
       // Return the newly created user with only email and id
       return res
