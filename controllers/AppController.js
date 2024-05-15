@@ -1,5 +1,5 @@
-const dbClient = require("../utils/db"); // database client
-const redisClient = require("../utils/redis"); // redis client
+const dbClient = require('../utils/db'); // database client
+const redisClient = require('../utils/redis'); // redis client
 
 const AppController = {
   // Check is redis is alive
@@ -10,7 +10,7 @@ const AppController = {
 
       res.status(200).json({ redis: redisStatus, db: dbStatus });
     } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 
@@ -22,7 +22,7 @@ const AppController = {
 
       res.status(200).json({ users: usersCount, files: filesCount });
     } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 };
