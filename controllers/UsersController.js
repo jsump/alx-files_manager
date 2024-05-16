@@ -1,6 +1,6 @@
 const redisClient = require("../utils/redis"); // redis client
 const dbClient = require("../utils/db"); // database client
-const AuthController = require('./AuthController');
+const AuthController = require("./AuthController");
 const crypto = require("crypto");
 
 const UsersController = {
@@ -51,8 +51,8 @@ const UsersController = {
     }
   },
 
-  // retrieve the user base on the token
   getMe: async (req, res) => {
+    // retrieve the user base on the token
     const { token } = req.headers;
 
     try {
@@ -64,11 +64,14 @@ const UsersController = {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Retrieve user object from the database using the user ID
+      // Convert the string user ID to an ObjectId
+      const userIdObject = ObjectId(userId);
+
+      // Retrieve user object from the database using the ObjectId
       const user = await dbClient
         .db()
         .collection("users")
-        .findOne({ _id: userId });
+        .findOne({ _id: userIdObject });
 
       // If user not found, return Unauthorized error
       if (!user) {
