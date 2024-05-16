@@ -53,7 +53,6 @@ const AuthController = {
       // Convert milliseconds to seconds
       const expiryTimeSeconds = Math.floor(expiryTimeMilliseconds / 1000);
 
-      console.log('Expiry time in seconds:', expiryTimeSeconds);
 
       // Store the user ID in Redis with the token as key, expires in 24 hours
       await redisClient.set(redisKey, user._id.toString(), expiryTimeSeconds);
