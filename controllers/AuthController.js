@@ -47,12 +47,21 @@ const AuthController = {
       // Create a key in Redis
       const redisKey = `auth_${token}`;
 
+      // Calculate the expiry time in milliseconds (24 hours)
+      const expiryTimeMilliseconds = Date.now() + 24 * 60 * 60 * 1000;
+
+      // Convert milliseconds to seconds
+      const expiryTimeSeconds = Math.floor(expiryTimeMilliseconds / 1000);
+
+      console.log('Expiry time in seconds:', expiryTimeSeconds);
+
       // Store the user ID in Redis with the token as key
-      await redisClient.set(redisKey, user._id.toString());
-
-      // Set the expiry time for the key
-      await redisClient.expire(redisKey, expiryTimeSeconds);
-
+      await redisClient.set(
+        redisKey,
+        user._id.toString(),
+        'EX',
+        expiryTimeSeconds
+      );
       // Return the token with status code 200
       return res.status(200).json({ token: token });
     } catch (error) {
