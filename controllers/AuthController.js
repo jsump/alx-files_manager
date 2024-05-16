@@ -20,7 +20,7 @@ const AuthController = {
 
     try {
       // Find user in the database by email and hashed password
-      const db = dbClient.client.db(dbClient.dbName);
+      const db = dbClient.client.db(dbClient.dbName); // Access the database directly
       const hashedPassword = crypto
         .createHash("sha1")
         .update(password)
