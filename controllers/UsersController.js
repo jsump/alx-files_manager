@@ -50,34 +50,6 @@ const UsersController = {
     }
   },
 
-  // retrieve the user base on the token 
-  getMe: async (req, res) => {
-    const { token } = req.headers;
-
-    try {
-      // Retrieve user ID based on the token from Redis
-      const userId = await redisClient.get(`auth_${token}`);
-
-      // If token is not found, return Unauthorized error
-      if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-
-      // Retrieve user object from the database using the user ID
-      const user = await dbClient.db().collection('users').findOne({ _id: userId });
-
-      // If user not found, return Unauthorized error
-      if (!user) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-
-      // Return the user object (email and id only)
-      return res.status(200).json({ email: user.email, id: user._id });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-  },
 };
 
 module.exports = UsersController;
