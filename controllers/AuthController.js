@@ -11,23 +11,24 @@ const AuthController = {
         return res.status(401).json({ error: "Unauthorized" });
     }
 
+    // Extracting credentials from the Authorization header
     const encodedCredentials = authorization.split(" ")[1];
-    const decodedCredentials = Buffer.from(
-        encodedCredentials,
-        "base64"
-    ).toString("utf-8");
+    let decodedCredentials;
+    try {
+        // Decoding Base64 credentials
+        decodedCredentials = Buffer.from(encodedCredentials, "base64").toString("utf-8");
+    } catch (error) {
+        // If decoding fails, return Unauthorized error
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const [email, password] = decodedCredentials.split(":");
 
     try {
         // Find user in the database by email and hashed password
         const db = dbClient.client.db(dbClient.dbName); // Access the database directly
-        const hashedPassword = crypto
-            .createHash("sha1")
-            .update(password)
-            .digest("hex");
-        const user = await db
-            .collection("users")
-            .findOne({ email, password: hashedPassword });
+        const hashedPassword = crypto.createHash("sha1").update(password).digest("hex");
+        const user = await db.collection("users").findOne({ email, password: hashedPassword });
 
         if (!user) {
             return res.status(401).json({ error: "Unauthorized" });
@@ -49,6 +50,7 @@ const AuthController = {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 },
+
 
   getDisconnect: async (req, res) => {
     const { token } = req.headers;
