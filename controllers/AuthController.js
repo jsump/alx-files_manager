@@ -1,5 +1,5 @@
-const redisClient = require("../utils/redis"); // redis client
-const dbClient = require("../utils/db"); // database client
+const redisClient = require("../utils/redis"); // Redis client
+const dbClient = require("../utils/db"); // Database client
 const crypto = require("crypto");
 const { v4: uuidv4 } = require("uuid");
 
@@ -38,6 +38,8 @@ const AuthController = {
 
       // Store the user ID in Redis with the token as key, expires in 24 hours
       const redisKey = `auth_${token}`;
+      
+      // Set user ID in Redis with expiration
       await redisClient.set(redisKey, user._id.toString(), "EX", 24 * 60 * 60);
 
       // Return the token
