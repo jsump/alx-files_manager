@@ -8,47 +8,47 @@ const AuthController = {
     const { authorization } = req.headers;
 
     if (!authorization || !authorization.startsWith("Basic ")) {
-      return res.status(401).json({ error: "Unauthorized" });
+        return res.status(401).json({ error: "Unauthorized" });
     }
 
     const encodedCredentials = authorization.split(" ")[1];
     const decodedCredentials = Buffer.from(
-      encodedCredentials,
-      "base64"
+        encodedCredentials,
+        "base64"
     ).toString("utf-8");
     const [email, password] = decodedCredentials.split(":");
 
     try {
-      // Find user in the database by email and hashed password
-      const db = dbClient.client.db(dbClient.dbName); // Access the database directly
-      const hashedPassword = crypto
-        .createHash("sha1")
-        .update(password)
-        .digest("hex");
-      const user = await db
-        .collection("users")
-        .findOne({ email, password: hashedPassword });
+        // Find user in the database by email and hashed password
+        const db = dbClient.client.db(dbClient.dbName); // Access the database directly
+        const hashedPassword = crypto
+            .createHash("sha1")
+            .update(password)
+            .digest("hex");
+        const user = await db
+            .collection("users")
+            .findOne({ email, password: hashedPassword });
 
-      if (!user) {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
+        if (!user) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
 
-      // Generate a random token
-      const token = uuidv4();
+        // Generate a random token
+        const token = uuidv4();
 
-      // Store the user ID in Redis with the token as key, expires in 24 hours
-      const redisKey = `auth_${token}`;
-      
-      // Set user ID in Redis with expiration
-      await redisClient.set(redisKey, user._id.toString(), "EX", 24 * 60 * 60);
+        // Create a key in Redis
+        const redisKey = `auth_${token}`;
 
-      // Return the token
-      return res.status(200).json({ token });
+        // Store the user ID in Redis with the token as key, expires in 24 hours
+        await redisClient.set(redisKey, user._id.toString(), "EX", 24 * 60 * 60);
+
+        // Return the token with status code 200
+        return res.status(200).json({ token: token });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Internal Server Error" });
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-  },
+},
 
   getDisconnect: async (req, res) => {
     const { token } = req.headers;
